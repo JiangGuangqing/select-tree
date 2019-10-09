@@ -3,6 +3,7 @@
 namespace Zhpefe\SelectTree;
 
 use Encore\Admin\Form\Field\MultipleSelect;
+use Illuminate\Support\Arr;
 
 class MultipleSelectForm extends MultipleSelect
 {
@@ -34,4 +35,49 @@ class MultipleSelectForm extends MultipleSelect
         }
         return parent::render()->with(compact('vars'));
     }
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function fill($data)
+	{
+		$relations = Arr::get($data, $this->column);
+		
+		if (is_string($relations)) {
+			$this->value = explode(',', $relations);
+		}
+		
+		if (!is_array($relations)) {
+			return;
+		}
+		
+		$first = current($relations);
+		
+		if (is_null($first)) {
+			$this->value = null;
+			
+			// MultipleSelect value store as an ont-to-many relationship.
+		} elseif (is_array($first)) {
+			foreach ($relations as $key =>$value) {
+				$tagid = Arr::get($value, "id");
+				$tagname = Arr::get($value, "tagName");
+				$this->value[$key]['tagid']=$tagid;
+				$this->value[$key]['tagname']=$tagname;
+			}
+			$str='';
+			foreach ($this->value as $value){
+				$value = join(",",$value);
+				$temp[] = $value;
+			}
+			foreach($temp as $v){
+				$str.=$v."|";
+			}
+			$str = substr($str,0,-1);
+//            var_dump('<pre>');var_dump($str);exit;
+			$this->value=$str;
+			// MultipleSelect value store as a column.
+		} else {
+			$this->value = $relations;
+		}
+	}
 }
