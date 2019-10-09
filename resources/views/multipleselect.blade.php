@@ -1,32 +1,43 @@
 <style>
-    .{{$id}}_dropdown{
-        margin-top:6px;
+    .{{$id}}_dropdown {
+        margin-top: 6px;
     }
-    .{{$id}}_dropdown .dropdown-toggle{
-        height:20px;
+
+    .{{$id}}_dropdown .dropdown-toggle {
+        height: 20px;
         padding: 6px 12px;
-        border:1px solid #d2d6de;
-        color:#555;
-        font-size:14px;
+        border: 1px solid #d2d6de;
+        color: #555;
+        font-size: 14px;
+
     }
-    .{{$id}}_dropdown .dropdown-menu >li{
-        padding:8px;
-        border-bottom: 1px solid rgba(0,0,0,.15);
+.dropdown-menu{
+    height:300px;
+    overflow-y: auto;
+}
+    .{{$id}}_dropdown .dropdown-menu > li {
+        padding: 8px;
+        border-bottom: 1px solid rgba(0, 0, 0, .15);
     }
-    .{{$id}}_dropdown .dropdown-menu >li:last-child{
+
+    .{{$id}}_dropdown .dropdown-menu > li:last-child {
         border-bottom: 0;
     }
-    .{{$id}}_dropdown .dropdown-menu >li li{
-        padding:5px;
-        border-bottom: 1px dotted rgba(0,0,0,.15);
+
+    .{{$id}}_dropdown .dropdown-menu > li li {
+        padding: 5px;
+        border-bottom: 1px dotted rgba(0, 0, 0, .15);
     }
-    .{{$id}}_dropdown .dropdown-menu >li li:last-child{
+
+    .{{$id}}_dropdown .dropdown-menu > li li:last-child {
         border-bottom: 0;
     }
-    .{{$id}}_dropdown .dropdown-menu label{
+
+    .{{$id}}_dropdown .dropdown-menu label {
         font-weight: 400;
     }
-    .{{$id}}_dropdown .dropdown-menu ul{
+
+    .{{$id}}_dropdown .dropdown-menu ul {
         list-style: none;
     }
 </style>
@@ -46,33 +57,52 @@
     </div>
 </div>
 <script>
-    (function(){
-        var checkbox_value = {{json_encode((array)old($column, $value))}};
-        var select_value = function(id, title){
+    (function () {
+        var select_value = function (id, title) {
             var select = $('#{{$id}}');
-            if(select.children(`option[value=${id}]`).length){
+            if (select.children(`option[value=${id}]`).length) {
                 select.children(`option[value=${id}]`).remove();
-                $('.{{$id}}_dropdown .dropdown-toggle .text').text(function(i, o){
+                $('.{{$id}}_dropdown .dropdown-toggle .text').text(function (i, o) {
                     o = '|' + o + '|';
-                    o = o.replace( `|${id}:${title}|`, '|' ).replace( `|${id}:${id}|`, '|' );
-                    return o.replace( /^\||\|$/g, '' );
+                    o = o.replace(`|${id}:${title}|`, '|').replace(`|${id}:${id}|`, '|');
+                    return o.replace(/^\||\|$/g, '');
                 })
             } else {
                 $('#{{$id}}').append(`<option selected value="${id}">${title}</option>`);
-                $('.{{$id}}_dropdown .dropdown-toggle .text').text(function(i, o){
-                    return `${o?o + '|': ''}${id}:${title}`;
+                $('.{{$id}}_dropdown .dropdown-toggle .text').text(function (i, o) {
+                    return `${o ? o + '|' : ''}${id}:${title}`;
                 })
             }
         };
-        var addSelect = function(parent_id, dom){
-            var init = arguments[2] ? 1: 0;
-            $.get("{{$vars['url']}}", {q: parent_id}, function(data){
-                if(data.hasOwnProperty('children') && data.children.length){
-                    var checkbox = init ? '<ul>': '';
-                    $.each(data.children, function(i,v){
+        var strValue='{{$value}}';
+        var checkbox_value=[];
+        var arrValue=[];
+        if(strValue) {
+            arrValue = strValue.split('|');
+            for (var i = 0; i < arrValue.length; i++) {
+                checkbox_value += arrValue[i].split(',')[0];
+                select_value(arrValue[i].split(',')[0], arrValue[i].split(',')[1]);
+                if (i < arrValue.length - 1) {
+                    checkbox_value += ',';
+                }
+            }
+            //转整型数组
+            checkbox_value = checkbox_value.split(",");
+            checkbox_value.forEach(item => {
+                checkbox_value.push(+item);
+            });
+        }
+        {{--var checkbox_value = {{json_encode((array)old($column, $value))}};--}}
+
+        var addSelect = function (parent_id, dom) {
+            var init = arguments[2] ? 1 : 0;
+            $.get("{{$vars['url']}}", {q: parent_id}, function (data) {
+                if (data.hasOwnProperty('children') && data.children.length) {
+                    var checkbox = init ? '<ul>' : '';
+                    $.each(data.children, function (i, v) {
                         checkbox +=
                             `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox"
-                            ${ Object.values(checkbox_value).includes(v.id) ? 'checked' : '' }
+                            ${Object.values(checkbox_value).includes(v.id) ? 'checked' : ''}
                             value="${v.id}" ></input><label>&emsp;<span class="title">${v.title}</span>
                             &emsp;<span class="caret"></span>
                             </label></li>`;
@@ -82,19 +112,16 @@
                 }
             });
         };
-        Object.values(checkbox_value).forEach(function(item){
-            select_value(item, item);
-        });
         addSelect({{$vars['top_id']}}, $('ul.dropdown-menu'));
-        $('.{{$id}}_dropdown').on('click', '.dropdown-menu li label', function(e){
+        $('.{{$id}}_dropdown').on('click', '.dropdown-menu li label', function (e) {
             var li = $(this).parent()
-            if(li.children('ul').length){
+            if (li.children('ul').length) {
                 li.children('ul').toggle();
             } else {
                 addSelect($(this).prev().attr('value'), li, 1);
             }
         });
-        $('.{{$id}}_dropdown').on('click', '.dropdown-menu li input[type=checkbox]', function(e){
+        $('.{{$id}}_dropdown').on('click', '.dropdown-menu li input[type=checkbox]', function (e) {
             var that = $(this);
             select_value(that.val(), that.next().find('.title').text());
         });

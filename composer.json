@@ -1,14 +1,12 @@
 {
-    "name": "zhpefe/select-tree",
-    "description": "laravel-admin select-tree",
+    "name": "laravel-admin/select-tree",
+    "description": "select-tree",
     "type": "library",
-    "keywords": ["laravel-admin", "select-tree"],
-    "homepage": "https://github.com/zhpefe/select-tree",
     "license": "MIT",
     "authors": [
         {
-            "name": "z.pefei",
-            "email": "zhpefe789@gmail.com"
+            "name": "JiangGuangqing",
+            "email": "hx@aumc.cc"
         }
     ],
     "require": {
