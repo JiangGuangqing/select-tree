@@ -1,18 +1,18 @@
 laravel-admin select-tree
 ======
 
-[select-tree](https://github.com/zhpefe/select-tree) 是针对laravel-admin 数据模型树 的 select 联动选择插件, 可集成至表单中，或用于筛选。
+[select-tree](https://github.com/JiangGuangqing/select-tree) 是针对laravel-admin 数据模型树 的 select 联动选择插件, 可集成至表单中，或用于筛选。
 
 单选效果
 
-![单选效果](https://github.com/zhpefe/select-tree/raw/master/select-tree.png)
+![单选效果](https://github.com/JiangGuangqing/select-tree/raw/master/select-tree.png)
 
 多选效果
 
-![多选效果](https://github.com/zhpefe/select-tree/raw/master/multipleselect-tree.png)
+![多选效果](https://github.com/JiangGuangqing/select-tree/raw/master/multipleselect-tree.png)
 ### 安装
 
-`composer require zhpefe/select-tree`
+`composer require JiangGuangqing/select-tree`
 
 ### 使用
 
