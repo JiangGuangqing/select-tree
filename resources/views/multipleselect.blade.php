@@ -11,10 +11,10 @@
         font-size: 14px;
 
     }
-    .dropdown-menu{
-        max-height:300px;
-        overflow-y: auto;
-    }
+.dropdown-menu{
+    max-height:300px;
+    overflow-y: auto;
+}
     .{{$id}}_dropdown .dropdown-menu > li {
         padding: 8px;
         border-bottom: 1px solid rgba(0, 0, 0, .15);
@@ -92,26 +92,26 @@
                 checkbox_value.push(+item);
             });
         }
-                {{--var checkbox_value = {{json_encode((array)old($column, $value))}};--}}
+        {{--var checkbox_value = {{json_encode((array)old($column, $value))}};--}}
 
         var addSelect = function (parent_id, dom) {
-                var init = arguments[2] ? 1 : 0;
-                $.get("{{$vars['url']}}", {q: parent_id}, function (data) {
-                    if (data.hasOwnProperty('children') && data.children.length) {
-                        var checkbox = init ? '<ul>' : '';
-                        $.each(data.children, function (i, v) {
-                            checkbox +=
-                                `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox"
+            var init = arguments[2] ? 1 : 0;
+            $.get("{{$vars['url']}}", {q: parent_id}, function (data) {
+                if (data.hasOwnProperty('children') && data.children.length) {
+                    var checkbox = init ? '<ul>' : '';
+                    $.each(data.children, function (i, v) {
+                        checkbox +=
+                            `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox"
                             ${Object.values(checkbox_value).includes(v.id) ? 'checked' : ''}
                             value="${v.id}" ></input><label>&emsp;<span class="title">${v.title}</span>
                             &emsp;<span class="caret"></span>
                             </label></li>`;
-                        });
-                        checkbox += init ? '</ul>' : '';
-                        dom.append(checkbox);
-                    }
-                });
-            };
+                    });
+                    checkbox += init ? '</ul>' : '';
+                    dom.append(checkbox);
+                }
+            });
+        };
         addSelect({{$vars['top_id']}}, $('ul.dropdown-menu'));
         //父级栏目展开按钮点击触发，控制子栏目显示隐藏
         $('.{{$id}}_dropdown').on('click', '.dropdown-menu li label', function (e) {
@@ -123,10 +123,9 @@
             }
         });
         //复选框被选中时触发
-        $('.{{$id}}_dropdown').on('click', '.dropdown-menu li input[type=checkbox]', function (e) {
+        $('.{{$id}}_dropdown .dropdown-menu').on('click','li input', function (e) {
             var that = $(this);
             select_value(that.val(), that.next().find('.title').text());
-            e.stopPropagation();
         });
         //点击下拉列表控件，切换列表显示隐藏
         $('.{{$id}}_dropdown a.dropdown-toggle').on('click', function (e) {
@@ -136,12 +135,10 @@
         //点击空白处收起列表
         $('.content').on('click', function (e) {
             $('.{{$id}}_dropdown').removeClass('open');
-            e.stopPropagation();
         });
         //阻止点击列表时冒泡
         $('.{{$id}}_dropdown .dropdown-menu').on('click', function (e) {
-
+            e.stopPropagation();
         });
-
     }())
 </script>
