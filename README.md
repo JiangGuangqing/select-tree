@@ -12,7 +12,7 @@ laravel-admin select-tree
 ![多选效果](https://github.com/JiangGuangqing/select-tree/raw/master/multipleselect-tree.png)
 ### 安装
 
-`composer require JiangGuangqing/select-tree`
+`composer require composer require laravel-admin-hx/select-tree`
 
 ### 使用
 
