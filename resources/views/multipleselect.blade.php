@@ -123,10 +123,9 @@
             }
         });
         //复选框被选中时触发
-        $('.{{$id}}_dropdown').on('click', '.dropdown-menu li input[type=checkbox]', function (e) {
+        $('.{{$id}}_dropdown .dropdown-menu').on('click','li input', function (e) {
             var that = $(this);
             select_value(that.val(), that.next().find('.title').text());
-            e.stopPropagation();
         });
         //点击下拉列表控件，切换列表显示隐藏
         $('.{{$id}}_dropdown a.dropdown-toggle').on('click', function (e) {
@@ -136,12 +135,10 @@
         //点击空白处收起列表
         $('.content').on('click', function (e) {
             $('.{{$id}}_dropdown').removeClass('open');
-            e.stopPropagation();
         });
         //阻止点击列表时冒泡
         $('.{{$id}}_dropdown .dropdown-menu').on('click', function (e) {
-
+            e.stopPropagation();
         });
-
     }())
 </script>
