@@ -140,12 +140,12 @@
             e.stopPropagation();   //阻止点击列表时冒泡
         });
         //复选框被选中时触发
-        $('.{{$id}}_dropdown .dropdown-menu').on('click','li input', function (e) {
+        $('.{{$id}}_dropdown .dropdown-menu').on('click','li input:checkbox', function (e) {
             var that = $(this);
             select_value(that.val(), that.next().find('.title').text());
             //选中状态向上遍历，否则跳过
             if(that.prop('checked')){
-                that.parents().prevAll('input').each(function(index){
+                that.parents().prevAll('input:checkbox').each(function(index){
                     if( !$(this).prop('checked')){
                         $(this).prop('checked','checked');
                         select_value($(this).val(), $(this).next().find('.title').text());
@@ -153,8 +153,8 @@
                 });
             }else{
                 //取消选择向下遍历，取消所有勾选
-                console.log(that.nextAll().find('input').length);
-                that.nextAll().find('input').each(function(index){
+                console.log(that.nextAll().find('input:checkbox').length);
+                that.nextAll().find('input:checkbox').each(function(index){
                     if( $(this).prop('checked')){
                         $(this).removeAttr('checked');
                         select_value($(this).val(), $(this).next().find('.title').text());
