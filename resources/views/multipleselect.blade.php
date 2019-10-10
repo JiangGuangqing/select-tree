@@ -60,8 +60,6 @@
     (function () {
         //修改控件文字
         var select_value = function (id, title) {
-            title=title.replace(/\ +/g,"");//去掉空格
-            title=title.replace(/[\r\n]/g,"")//去掉回车换行
             var select = $('#{{$id}}');
             if (select.children(`option[value=${id}]`).length) {
                 select.children(`option[value=${id}]`).remove();
@@ -83,30 +81,31 @@
                 console.log(data);
                 var checkbox =  '' ;
                 data.forEach(function(v){
-                    checkbox += `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(v.id) ? 'checked' : ''}  value="${v.id}" ></input><label><span class="title">${v.title}</span><span class="caret"></span></label>`;
+                    checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(v.id) ? 'checked' : ''}  value="${v.id}" ><\/input><label>&emsp;<span class="title">${v.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
                     checkbox +=  '<ul style="display: none;">' ;
                     v.list.forEach(function(vv){
-                        checkbox += `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vv.id) ? 'checked' : ''} value="${vv.id}" ></input><label><span class="title">${vv.title}</span><span class="caret"></span></label>`;
+                        checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vv.id) ? 'checked' : ''} value="${vv.id}" ><\/input><label>&emsp;<span class="title">${vv.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
                         checkbox +=  '<ul style="display: none;">' ;
                         vv.list.forEach(function(vvv){
-                            checkbox += `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvv.id) ? 'checked' : ''} value="${vvv.id}" ></input><label><span class="title">${vvv.title}</span><span class="caret"></span></label>`;
+                            checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvv.id) ? 'checked' : ''} value="${vvv.id}" ><\/input><label>&emsp;<span class="title">${vvv.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
                             checkbox +=  '<ul style="display: none;">' ;
                             vvv.list.forEach(function(vvvv){
-                                checkbox += `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvvv.id) ? 'checked' : ''} value="${vvvv.id}" ></input><label><span class="title">${vvvv.title}</span><span class="caret"></span></label>`;
-                                checkbox += '</ul>' ;
-                                checkbox += `</li>`;
+                                checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvvv.id) ? 'checked' : ''} value="${vvvv.id}" ><\/input><label>&emsp;<span class="title">${vvvv.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
+                                checkbox += '<\/ul>' ;
+                                checkbox += `<\/li>`;
                             });
-                            checkbox += '</ul>' ;
-                            checkbox += '</ul>' ;
-                            checkbox += `</li>`;
+                            checkbox += '<\/ul>' ;
+                            checkbox += '<\/ul>' ;
+                            checkbox += `<\/li>`;
                         });
-                        checkbox += '</ul>' ;
-                        checkbox += '</ul>' ;
-                        checkbox += `</li>`;
+                        checkbox += '<\/ul>' ;
+                        checkbox += '<\/ul>' ;
+                        checkbox += `<\/li>`;
                     });
-                    checkbox += '</ul>' ;
-                    checkbox += `</li>`;
+                    checkbox += '<\/ul>' ;
+                    checkbox += `<\/li>`;
                 });
+                console.log(checkbox);
                 dom.append(checkbox);
             });
         };
