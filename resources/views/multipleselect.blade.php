@@ -58,7 +58,10 @@
 </div>
 <script>
     (function () {
+        //修改控件文字
         var select_value = function (id, title) {
+            title=title.replace(/\ +/g,"");//去掉空格
+            title=title.replace(/[\r\n]/g,"")//去掉回车换行
             var select = $('#{{$id}}');
             if (select.children(`option[value=${id}]`).length) {
                 select.children(`option[value=${id}]`).remove();
@@ -74,6 +77,40 @@
                 })
             }
         };
+        //增加列表项
+        var addSelect = function (parent_id, dom) {
+            $.get("{{$vars['url']}}", {q: parent_id}, function (data) {
+                console.log(data);
+                var checkbox =  '' ;
+                data.forEach(function(v){
+                    checkbox += `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(v.id) ? 'checked' : ''}  value="${v.id}" ></input><label><span class="title">${v.title}</span><span class="caret"></span></label>`;
+                    checkbox +=  '<ul style="display: none;">' ;
+                    v.list.forEach(function(vv){
+                        checkbox += `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vv.id) ? 'checked' : ''} value="${vv.id}" ></input><label><span class="title">${vv.title}</span><span class="caret"></span></label>`;
+                        checkbox +=  '<ul style="display: none;">' ;
+                        vv.list.forEach(function(vvv){
+                            checkbox += `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvv.id) ? 'checked' : ''} value="${vvv.id}" ></input><label><span class="title">${vvv.title}</span><span class="caret"></span></label>`;
+                            checkbox +=  '<ul style="display: none;">' ;
+                            vvv.list.forEach(function(vvvv){
+                                checkbox += `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvvv.id) ? 'checked' : ''} value="${vvvv.id}" ></input><label><span class="title">${vvvv.title}</span><span class="caret"></span></label>`;
+                                checkbox += '</ul>' ;
+                                checkbox += `</li>`;
+                            });
+                            checkbox += '</ul>' ;
+                            checkbox += '</ul>' ;
+                            checkbox += `</li>`;
+                        });
+                        checkbox += '</ul>' ;
+                        checkbox += '</ul>' ;
+                        checkbox += `</li>`;
+                    });
+                    checkbox += '</ul>' ;
+                    checkbox += `</li>`;
+                });
+                dom.append(checkbox);
+            });
+        };
+
         var strValue='{{$value}}';
         var checkbox_value=[];
         var arrValue=[];
@@ -92,53 +129,52 @@
                 checkbox_value.push(+item);
             });
         }
-                {{--var checkbox_value = {{json_encode((array)old($column, $value))}};--}}
-
-        var addSelect = function (parent_id, dom) {
-                var init = arguments[2] ? 1 : 0;
-                $.get("{{$vars['url']}}", {q: parent_id}, function (data) {
-                    if (data.hasOwnProperty('children') && data.children.length) {
-                        var checkbox = init ? '<ul>' : '';
-                        $.each(data.children, function (i, v) {
-                            checkbox +=
-                                `<li><input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox"
-                            ${Object.values(checkbox_value).includes(v.id) ? 'checked' : ''}
-                            value="${v.id}" ></input><label>&emsp;<span class="title">${v.title}</span>
-                            &emsp;<span class="caret"></span>
-                            </label></li>`;
-                        });
-                        checkbox += init ? '</ul>' : '';
-                        dom.append(checkbox);
-                    }
-                });
-            };
         addSelect({{$vars['top_id']}}, $('ul.dropdown-menu'));
+
+        //监听器
         //父级栏目展开按钮点击触发，控制子栏目显示隐藏
-        $('.{{$id}}_dropdown').on('click', '.dropdown-menu li label', function (e) {
+        $('.{{$id}}_dropdown .dropdown-menu ').on('click', 'li label', function (e) {
             var li = $(this).parent()
             if (li.children('ul').length) {
                 li.children('ul').toggle();
-            } else {
-                addSelect($(this).prev().attr('value'), li, 1);
             }
+            e.stopPropagation();   //阻止点击列表时冒泡
         });
         //复选框被选中时触发
         $('.{{$id}}_dropdown .dropdown-menu').on('click','li input', function (e) {
             var that = $(this);
             select_value(that.val(), that.next().find('.title').text());
+            //选中状态向上遍历，否则跳过
+            if(that.prop('checked')){
+                that.parents().prevAll('input').each(function(index){
+                    if( !$(this).prop('checked')){
+                        $(this).prop('checked','checked');
+                        select_value($(this).val(), $(this).next().find('.title').text());
+                    }
+                });
+            }else{
+                //取消选择向下遍历，取消所有勾选
+                console.log(that.nextAll().find('input').length);
+                that.nextAll().find('input').each(function(index){
+                    if( $(this).prop('checked')){
+                        $(this).removeAttr('checked');
+                        select_value($(this).val(), $(this).next().find('.title').text());
+                    }
+                });
+            }
         });
-        //点击下拉列表控件，切换列表显示隐藏
+        //点击下拉列表控件触发，切换列表显示隐藏
         $('.{{$id}}_dropdown a.dropdown-toggle').on('click', function (e) {
             $(this).parent().toggleClass('open');
-            e.stopPropagation();
+            e.stopPropagation();   //阻止点击列表时冒泡
         });
         //点击空白处收起列表
         $('.content').on('click', function (e) {
             $('.{{$id}}_dropdown').removeClass('open');
         });
-        //阻止点击列表时冒泡
+        //点击列表面板时触发
         $('.{{$id}}_dropdown .dropdown-menu').on('click', function (e) {
-            e.stopPropagation();
+            e.stopPropagation();   //阻止点击列表时冒泡
         });
 
     }())
