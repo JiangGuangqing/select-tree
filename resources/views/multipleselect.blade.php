@@ -58,7 +58,7 @@
 </div>
 <script>
     (function () {
-        //修改控件文字
+        //选中/取消选中时修改控件文字
         var select_value = function (id, title) {
             var select = $('#{{$id}}');
             if (select.children(`option[value=${id}]`).length) {
@@ -78,27 +78,24 @@
         //增加列表项
         var addSelect = function (parent_id, dom) {
             $.get("{{$vars['url']}}", {q: parent_id}, function (data) {
-                console.log(data);
+                // console.log("alldata:"+JSON.stringify(data));
                 var checkbox =  '' ;
                 data.forEach(function(v){
-                    checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(v.id) ? 'checked' : ''}  value="${v.id}" ><\/input><label>&emsp;<span class="title">${v.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
+                    checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(v.id) ? 'checked' : ''}  value="${v.id}" ><label>&emsp;<span class="title">${v.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
                     checkbox +=  '<ul style="display: none;">' ;
                     v.list.forEach(function(vv){
-                        checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vv.id) ? 'checked' : ''} value="${vv.id}" ><\/input><label>&emsp;<span class="title">${vv.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
+                        checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vv.id) ? 'checked' : ''} value="${vv.id}" ><label>&emsp;<span class="title">${vv.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
                         checkbox +=  '<ul style="display: none;">' ;
                         vv.list.forEach(function(vvv){
-                            checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvv.id) ? 'checked' : ''} value="${vvv.id}" ><\/input><label>&emsp;<span class="title">${vvv.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
+                            checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvv.id) ? 'checked' : ''} value="${vvv.id}" ><label>&emsp;<span class="title">${vvv.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
                             checkbox +=  '<ul style="display: none;">' ;
                             vvv.list.forEach(function(vvvv){
-                                checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvvv.id) ? 'checked' : ''} value="${vvvv.id}" ><\/input><label>&emsp;<span class="title">${vvvv.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
-                                checkbox += '<\/ul>' ;
+                                checkbox += `<li>&emsp;<input type="checkbox" name="{{$name}}" class="{{$name}}_checkbox" ${Object.values(checkbox_value).includes(vvvv.id) ? 'checked' : ''} value="${vvvv.id}" ><label>&emsp;<span class="title">${vvvv.title}<\/span>&emsp;<span class="caret"><\/span><\/label>`;
                                 checkbox += `<\/li>`;
                             });
                             checkbox += '<\/ul>' ;
-                            checkbox += '<\/ul>' ;
                             checkbox += `<\/li>`;
                         });
-                        checkbox += '<\/ul>' ;
                         checkbox += '<\/ul>' ;
                         checkbox += `<\/li>`;
                     });
@@ -153,7 +150,6 @@
                 });
             }else{
                 //取消选择向下遍历，取消所有勾选
-                console.log(that.nextAll().find('input:checkbox').length);
                 that.nextAll().find('input:checkbox').each(function(index){
                     if( $(this).prop('checked')){
                         $(this).removeAttr('checked');
